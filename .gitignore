@@ -16,3 +16,4 @@ test.el
 *.graphql
 *.http
 /leetcode-autoloads.el
+/leetcode-cn-autoloads.el

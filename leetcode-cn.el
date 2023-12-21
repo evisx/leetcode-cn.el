@@ -48,15 +48,14 @@
 (require 'aio)
 (require 'spinner)
 (require 'log4e)
-(require 'leetcode)
 
-(log4e:deflogger "leetcode" "%t [%l] %m" "%H:%M:%S" '((fatal . "fatal")
+(log4e:deflogger "leetcode-cn" "%t [%l] %m" "%H:%M:%S" '((fatal . "fatal")
                                                       (error . "error")
                                                       (warn  . "warn")
                                                       (info  . "info")
                                                       (debug . "debug")
                                                       (trace . "trace")))
-(setq log4e--log-buffer-leetcode "*leetcode-cn-log*")
+(setq log4e--log-buffer-leetcode-cn "*leetcode-cn-log*")
 
 ;;;###autoload
 (defun leetcode-cn-toggle-debug ()
@@ -93,35 +92,35 @@
 
 (defcustom leetcode-cn-prefer-tag-display t
   "Whether to display tags by default in the *leetcode* buffer."
-  :group 'leetcode
+  :group 'leetcode-cn
   :type 'boolean)
 
 (defcustom leetcode-cn-prefer-language "python3"
   "LeetCode programming language.
 c, cpp, csharp, golang, java, javascript, typescript, kotlin, php, python,
 python3, ruby, rust, scala, swift."
-  :group 'leetcode
+  :group 'leetcode-cn
   :type 'string)
 
 (defcustom leetcode-cn-prefer-sql "mysql"
   "LeetCode sql implementation.
 mysql, mssql, oraclesql."
-  :group 'leetcode
+  :group 'leetcode-cn
   :type 'string)
 
 (defcustom leetcode-cn-directory "~/leetcode"
   "Directory to save solutions."
-  :group 'leetcode
+  :group 'leetcode-cn
   :type 'string)
 
 (defcustom leetcode-cn-save-solutions nil
   "If it's t, save leetcode solutions to `leetcode-cn-directory'."
-  :group 'leetcode
+  :group 'leetcode-cn
   :type 'boolean)
 
 (defcustom leetcode-cn-focus t
   "When execute `leetcode', always delete other windows."
-  :group 'leetcode
+  :group 'leetcode-cn
   :type 'boolean)
 
 (cl-defstruct leetcode-cn-user
@@ -205,44 +204,44 @@ python3, ruby, rust, scala, swift, mysql, mssql, oraclesql.")
 (defconst leetcode-cn--all-difficulties '("easy" "medium" "hard"))
 (defconst leetcode-cn--paid "•" "Paid mark.")
 (defconst leetcode-cn--checkmark "✓" "Checkmark for accepted problem.")
-(defconst leetcode-cn--buffer-name             "*leetcode*")
+(defconst leetcode-cn--buffer-name             "*leetcode-cn*")
 
 (defconst leetcode-cn--retry-times 20 "`leetcode-cn-try' or `leetcode-cn-submit' retry times.")
 
 (defface leetcode-cn-paid-face
   '((t (:foreground "gold")))
   "Face for `leetcode-cn--paid'."
-  :group 'leetcode)
+  :group 'leetcode-cn)
 
 (defface leetcode-cn-checkmark-face
   '((t (:foreground "#5CB85C")))
   "Face for `leetcode-cn--checkmark'."
-  :group 'leetcode)
+  :group 'leetcode-cn)
 
 (defface leetcode-cn-easy-face
   '((t (:foreground "#5CB85C")))
   "Face for easy problems."
-  :group 'leetcode)
+  :group 'leetcode-cn)
 
 (defface leetcode-cn-medium-face
   '((t (:foreground "#F0AD4E")))
   "Face for medium problems."
-  :group 'leetcode)
+  :group 'leetcode-cn)
 
 (defface leetcode-cn-hard-face
   '((t (:foreground "#D9534E")))
   "Face for hard problems."
-  :group 'leetcode)
+  :group 'leetcode-cn)
 
 (defface leetcode-cn-accepted-face
   '((t (:foreground "#228b22")))
   "Face for submission accepted."
-  :group 'leetcode)
+  :group 'leetcode-cn)
 
 (defface leetcode-cn-error-face
   '((t (:foreground "#dc143c")))
   "Face for submission compile error, runtime error and TLE."
-  :group 'leetcode)
+  :group 'leetcode-cn)
 
 ;;; Login
 ;; URL
@@ -1066,6 +1065,7 @@ will show the detail in other window and jump to it."
                               'action (lambda (btn)
                                         (browse-url (leetcode-cn--problem-link title)))
                               'help-echo "Open the problem in browser.")
+          (insert (make-string 4 ?\s))
           (insert-text-button "English Link"
                               'action (lambda (btn)
                                         (browse-url (leetcode--problem-link title)))
@@ -1075,6 +1075,7 @@ will show the detail in other window and jump to it."
                               'action (lambda (btn)
                                         (browse-url (concat (leetcode-cn--problem-link title) "/solution")))
                               'help-echo "Open the problem solution page in browser.")
+          (insert (make-string 4 ?\s))
           (insert-text-button "English Solution"
                               'action (lambda (btn)
                                         (browse-url (concat (leetcode--problem-link title) "/solution")))
@@ -1360,7 +1361,7 @@ It will restore the layout based on current buffer's name."
   "Major mode for browsing a list of problems."
   (setq tabulated-list-padding 2)
   (add-hook 'tabulated-list-revert-hook #'leetcode-cn-refresh nil t)
-  :group 'leetcode
+  :group 'leetcode-cn
   :keymap leetcode-cn--problems-mode-map)
 
 (defun leetcode-cn--set-evil-local-map (map)
@@ -1393,7 +1394,7 @@ It will restore the layout based on current buffer's name."
 (define-derived-mode leetcode-cn--problem-detail-mode
   special-mode "LC Detail"
   "Major mode for display problem detail."
-  :group 'leetcode
+  :group 'leetcode-cn
   :keymap leetcode-cn--problem-detail-mode-map)
 
 (add-hook 'leetcode-cn--problem-detail-mode-hook
@@ -1411,7 +1412,7 @@ It will restore the layout based on current buffer's name."
   "Minor mode to showing leetcode loading status."
   :require 'leetcode
   :lighter leetcode-cn--loading-lighter
-  :group 'leetcode
+  :group 'leetcode-cn
   (if leetcode-cn--loading-mode
       (spinner-start leetcode-cn--spinner)
     (spinner-stop leetcode-cn--spinner)))
@@ -1430,7 +1431,7 @@ It will restore the layout based on current buffer's name."
   "Minor mode to provide shortcut and hooks."
   :require 'leetcode
   :lighter " LC-Solution"
-  :group 'leetcode
+  :group 'leetcode-cn
   :keymap leetcode-cn-solution-mode-map)
 
 (provide 'leetcode-cn)
